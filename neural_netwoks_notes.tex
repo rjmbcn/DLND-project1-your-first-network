@@ -12,24 +12,29 @@
 \begin{document}
 \maketitle 
 
-\textbf{Neural networks, setup, architecture definitions.} Neural networks consists of $L$ layers labeled $l = 1,2 ...L$. In a given $l$ layer there are $n_l$ cells, whose activation outputs are denoted $a_j^{l}$ and given by 
+\textbf{Neural networks, setup, architecture definitions.} Neural networks consists of $L$ layers labeled 
+$l = 1,2 ...L$. In a given $l$ layer there are $n_l$ cells, whose activation outputs are denoted 
+$a_j^{l}$ and given by 
 \begin{equation}
-	a_j^{l} = f(h^l_{j}),
+	a_j^{l} = f(z^l_{j}),
 \end{equation}
-where the $f(h^l_{j})$ is known as the activation function whose argument is given by the weighted input to the cell 
+where $f(z^l_{j})$ is known as the activation function whose argument is given by  
 \begin{equation}
-	h^l_{j} = \sum_{k=1}^{n_{l-1}} w_{jk}a^{l-1}_k,
+	z^l_{j} = \sum_{k=1}^{n_{l-1}} w_{jk}a^{l-1}_k,
 \end{equation}
-here the weight $w^{l}_{jk}$ connects the activation $a^{l-1}_k$ of the $k$-th cell in the previous layer to the $j$ cell in the $l$-th layer. 
+here the weight $w^{l}_{jk}$ connects the output $a^{l-1}_k$ of the $k$-th cell in the previous layer 
+to the $j$ cell in the $l$-th layer. 
 
-Matrix and vector notation is used to efficiently represent a neural network. Considering layer $l$ its activation outputs are contained in a column vector $\mathbf{a}^{l} = [a^l_1 ~ a^l_2~...~a^l_{n_l}]^{T}$, given by 
+Matrix and vector notation is used to efficiently represent a neural network. 
+Considering layer $l$ its activation outputs are contained in a column vector 
+$\mathbf{a}^{l} = [a^l_1 ~ a^l_2~...~a^l_{n_l}]^{T}$, given by 
 
 \begin{eqnarray}
-	\mathbf{a}^{l} &=& f\left( \mathbf{h}^{l} \right) 
+	\mathbf{a}^{l} &=& f\left( \mathbf{z}^{l} \right) 
 \end{eqnarray}
-where the weighted~input~is 
+where the input is
 \begin{eqnarray}
-	\mathbf{h}^{l}   &=& \mathbf{W}^{l} \mathbf{a}^{l-1},
+	\mathbf{z}^{l}   &=& \mathbf{W}^{l} \mathbf{a}^{l-1},
 \end{eqnarray} 
 with the weight matrix 
 
@@ -41,45 +46,64 @@ with the weight matrix
 	\end{array}\right).
 \end{equation}
 
-\textit{Input and output layers.} The activation vector of the input layer of the network is equal to the input vector $\mathbf{x}$. For each input there is an observation vector $\mathbf{y}$. The activation vector of the output layer is denoted by $\mathbf{\hat{y}}$
+\textit{Input and output layers.} The activation vector of the input layer consists of the input vector 
+$\mathbf{x}$. For each input there is an observation vector $\mathbf{y}$. The activation vector of the 
+output layer is denoted by $\mathbf{\hat{y}}$
 
 \textit{Hidden layers.} Hidden layers are those layers connecting the input layer to the output layer.
 
-\textit{Training a neural network.}  A network is trained by adjusting the elements in its weight matrices $\mathbf{W}^{l}$ to yield a minimum value in the cost function given a set of known inputs and known observations $\{\mathbf{x},\mathbf{y}\}$. The typical optimization method is gradient descent.  
+\textit{Training a neural network.}  A network is trained by adjusting the elements in 
+its weight matrices $\mathbf{W}^{l}$ to yield a minimum value in its cost function $\mathrm{C}$. Given 
+a set of inputs and observations $\{\mathbf{x},\mathbf{y}\}$ the cost function can defined as 
 
-  
-\textbf{Network performance.} The performance of a neural network can be described by its cost function $\mathrm{C}$, which quantifies the difference $\mathbf{y} - \mathbf{\hat{y}}$ between the neural net output $\mathbf{\hat{y}}$, given the fetures vector $\mathbf{x}$ and weight matrices $\mathbf{W}^{l}$, and the correspoding observation $\mathbf{y}$. In classification tasks the performance of the network is also described by its accuracy. \\
+\begin{equation}
+    \mathrm{C} = \frac{1}{2}\sum_j(y_j - \hat{y}_j)^2
+\end{equation}
+other cost functions could be used. The typical training/optimization technique is gradient descent.  
 
-\textbf{Network optmization.} Given a set of known inputs and known observations $\{\mathbf{x},\mathbf{y}\}$ a network is optimized by minimizing its cost function. This is typically achieved by first initializing the weights $\mathbf{W}^{l}$. Then given a subset (also known as a \textit{batch}) of the inputs $\mathbf{x}$ compute the network outputs $\mathbf{\hat{y}}$. This step is known as forward propagation. From the computed network outputs and the known outputs the error is calculated, which is then used to compute the cost function.   
+\textbf{Network optmization.} Given a set of known inputs and known observations 
+$\{\mathbf{x},\mathbf{y}\}$ a network is optimized by minimizing its cost function $\mathrm{C}$. 
+This is typically achieved by first initializing the weights $\mathbf{W}^{l}$. 
+Then given a subset (also known as a \textit{batch}) of the inputs 
+$\mathbf{x}$ is used to compute the network outputs $\mathbf{\hat{y}}$. 
+This step is known as forward propagation. From the computed network outputs and the known outputs 
+the cost function is computed, for instance using the squared error 
 
-and computing the errror  
-
-
- iteritavely changing the weight values s
+\begin{equation}
+    \mathrm{C} = \frac{1}{2}\sum_j(y_j - \hat{y}_j)^2
+\end{equation}
 
 The typical optimization method, i.e. finding minima in the Cost function, is gradient descent. 
 
-\textbf{Gradient descent.} (From wikipedia) Gradient descent is a first-order iterative optimization algorithm. To find a local minimum of the cost function using gradient descent, one takes steps proportional to the negative of the gradient of the function with respect weights at the current point:
+\textbf{Gradient descent.} (From wikipedia) Gradient descent is a first-order iterative optimization 
+algorithm. To find a local minimum of the cost function using gradient descent, 
+one takes steps proportional to the negative of the gradient of the function with respect weights at 
+the current point:
 
 \begin{equation}
 	\Delta \mathbf{W}^{l} = - \gamma \nabla_{\mathbf{W}^{l}} \mathrm{C},
 \end{equation}
 where proportionality factor $\gamma$ is a positive constant known as the learning rate of the network. 
 
-\textbf{Backpropagation.} Backpropagation is the name that gradient descent receives when used to train a neural network. It consists in propagating the error of the cost function, for a given set of $\{\mathbf{x},\mathbf{y}\}$, through the different hidden layers in the network so that $\Delta \mathbf{W}^{l}$ can be computed.
+\textbf{Backpropagation.} Backpropagation is the name that gradient descent receives when used to 
+train a neural network. It consists in computing the error, for a given set of 
+$\{\mathbf{x},\mathbf{y}\}$, and propagating it through the different hidden layers in the network so that 
+$\Delta \mathbf{W}^{l}$ can be computed.
+
+The following equations describe a summary of backpropagation, including matrix notation where $\odot$ and $\otimes$
+denote element-wise matrix multiplication and outer-product respectively.
 
 \begin{itemize}
   	\item Error in output layer: 
 	\begin{eqnarray}
-	        \delta^{L}_{j} &=& \frac{ \partial C}{\partial a^{L}_{j}}g^{'}\left( {h}^{L}_{j}\right) \rightarrow \mathrm{~matrix ~ form:} \\
-		\delta^{L} &=& \nabla_{\mathbf{a}}C \bigodot g^{'}\left( \mathbf{h}^{L} \right) \rightarrow \rightarrow \mathrm{~Numpy ~ implementation:} \\
-		\rm{error\_output} &= &  \rm{partial\_cost\_partial\_activation*g\_prime}
+	        \delta^{L}_{j} &=& \frac{ \partial C}{\partial a^{L}_{j}}f^{'}\left( {z}^{L}_{j}\right) \rightarrow \mathrm{~matrix ~ form:} \\
+		\delta^{L} &=& \nabla_{\mathbf{a}}C \odot g^{'}\left( \mathbf{h}^{L} \right) 
+		% \delta^{L} &= &  'np.multiply( \rm{partial\_cost\_partial\_activation*h\_prime})' 
 	\end{eqnarray} 
 	\item Error in hidden layer: 
 	\begin{eqnarray}
 		\delta^{l-1}_{k} &=& \sum_{j}w^{l}_{jk}\delta^{l}_{j}f^{'}\left( h^{l-1}_k \right) \rightarrow : \\
-		\delta^{l-1} &=& \left(\left(\mathbf{W}^{l}\right)^{T}\delta^{l} \right) \bigodot f^{'}\left( \mathbf{h}^{l-1}\right) \rightarrow \rightarrow:  \\
-		\rm{error\_hidden} &=&  \left (\rm{np.dot(weights\_hidden.^{T},}\delta^{l}) \right) \rm{*f\_prime}
+		\delta^{l-1} &=& \left(\left(\mathbf{W}^{l}\right)^{T}\delta^{l} \right) \odot f^{'}\left( \mathbf{h}^{l-1}\right) 
 	\end{eqnarray}
 	\item Rate of change of cost function with respect bias in the network:  
 	\begin{eqnarray}
@@ -88,44 +112,76 @@ where proportionality factor $\gamma$ is a positive constant known as the learni
 	\end{eqnarray}
 	\item Rate of change of cost function with respect weights in the network: 
 	\begin{eqnarray}
-	 	\frac{\partial C}{\partial w^{l}_{jk} } &=& a^{l-1}_{k}\delta^{l}_{j} \rightarrow : \\
-		\frac{\partial C}{\partial \mathbf{W}} &=& \mathbf{a}^{l-1} \left(\delta^{l}\right)^{T} \rightarrow \rightarrow:  \\
-		\rm{partial\_cost\_partial\_weight} &= & \rm{np.dot}(\mathbf{a}^{l-1},\delta^{l}\rm{.^{T}})
+	 	\frac{\partial C}{\partial w^{l}_{jk} } &=& \delta^{l}_{j} a^{l-1}_{k}\rightarrow : \\
+		\frac{\partial C}{\partial \mathbf{W}} &=& \delta^{l} \otimes \mathbf{a}^{l-1} 
 	\end{eqnarray} 
-
 \end{itemize}
 
-\textbf{Neural network performance.} A neural network is trained on a set of data $\{\mathbf{x},\mathbf{y}\}$ with the purpose to make predictions on the outcome of a process given a new set of input values. Two common pitfalls can limit the quality of predictions: oversimplication of network model and complexity of the model. Simplification of the network model can produce \textit{underfitting} of the training data, that is a model that misses important aspects of the process in their predictions. On the other had a high level of complexity in the model can produce \textit{overfitting}, that is a model that is too specific for the given training data set. A healthy balance is achieved in the middle, that is a network model that takes into account the most relevant aspects of the process but that is general enough to make accurate predictions based on a new set of inputs. To achieve such a model the data available to train a network is divided into three mutually exclusive sets: training data, validation data, and testing data. The approach consists on tuning the weights in the network using the training data, then making predictions using the validation data. Underfitting is shown when the cost function, normalized to a relevant scale, is high. Overfitting is present when the cost function for the training data is low but the cost computed based on the validation data differs significantly from the training data cost. When both costs agree with each other the network is said to be well trained, its perfromance can then be estimated by calculating the cost of the nework using the testing data set. 
+\textbf{Neural network performance.} A neural network is trained on a set of data 
+$\{\mathbf{x},\mathbf{y}\}$ with the purpose to make predictions on the outcome of a 
+process given a new set of input values. Two common pitfalls can limit the quality of predictions: 
+oversimplication of network model and complexity of the model. Oversimplification of the model 
+can produce \textit{underfitting} of the training data, that is a model that misses important aspects of 
+the process in their predictions. On the other had a high level of complexity in the model 
+can produce \textit{overfitting}, that is a model that is too specific for the given training data set. 
+A healthy balance is achieved in the middle, that is a network model that takes into account the most 
+relevant aspects of the process but that is general enough to make accurate predictions based on a 
+new set of inputs. 
+
+To achieve such a model the data available to train a network is divided into three mutually exclusive sets: 
+\emph{training data}, \emph{validation data}, and \emph{testing data}. 
+The approach consists on tuning the weights in the 
+network using the \emph{training data}, then making predictions using the \emph{validation data}. 
+\emph{Underfitting} of the model is shown when the cost function, normalized to a relevant scale,  evaluated on the validation set 
+is too high. 
+\emph{Overfitting} is present when the cost function for the training data is low but the cost computed based on 
+the validation data differs significantly from the training data cost. 
+When both costs agree with each other the network is said to be well trained, its perfromance can then be 
+estimated by calculating the cost of the nework using the testing data set. 
 
 \textbf{Advanced neural networks}
-Some problems are better tackled using specialized versions of neural networks, such as in convolutional neural networks (CNN) and recurrent-neural networks (RNN). These two types of neural networks are implemented taking advantage of known features in the input data such as in images or in time series. The idea behind is very simple: exploit known structures in the input data to make the learning and inference process of the network more efficient.
-For instance consider the problem of recognizing a cat in an image where it does not matter the location of the cat within the image. If it is in the top left or the bottom right, it is still a cat to our eyes. We would like our CNNs to also possess this ability known as translation invariance.  
+Some problems are better tackled using specialized versions of neural networks, such as in convolutional 
+neural networks (CNN) and recurrent-neural networks (RNN). These two types of neural networks are 
+implemented taking advantage of known features in the input data such as in images or in time series. 
+The idea behind is simple: exploit known structures in the input data to make the learning and inference 
+process of the network more efficient.
 
+\textbf{Derivation of backpropagation equations} It is all about the chain rule. The goal is to find
+the weights that minimize the cost function of the model, which can be implemented numerically 
+using gradient descent 
 
+\begin{equation}
+	\mathbf{W}^{l} = \mathbf{W}^{l} - \gamma \nabla_{\mathbf{W}^{l}} \mathrm{C},
+\end{equation}
 
-One of them is Recurrent Neural Networks (RNN) which are appropriate to handle cases where inputs.... 
-\textbf{Characteristics}
-\begin{enumerate}
-  \item The inputs are ordered. Does the order matter? 
-  \item One would like to predict the current state of a system given its previous states. 
-  \item 
-\end{enumerate}
+For instance to get the rate of change of the cost function with respect
+ coefficients in the second to last layer
+\begin{equation}
+    \frac{\partial C}{\partial w^{L-1}_{jk}} =  \frac{\partial C}{\partial a^{L}_j} 
+                                               \frac{\partial a^{L}_j}{\partial z^{L}_j}
+                                               \frac{\partial z^{L}_j}{\partial w_{jk} }
+\end{equation}
 
-Basic equation for activation function in RNN: 
+To get the rate of change of teh cost function with respect to coefficients in inner layers consider 
 
+\begin{equation}
+    \frac{\partial C}{\partial w^{L-2}_{kl}} = \sum_j \frac{\partial C}{\partial a^{L}_j} 
+                                               \frac{\partial a^{L}_j}{\partial z^{L}_j}
+                                               \frac{\partial z^{L}_j}{\partial w_{kl} }
+\end{equation}    
+where the sum running over $j$ is due to the fact that the $ w^{L-2}_{kl} $ weight
+in the $L-2$ layer couples to all cells in the $L$ layer by the output $a^{L-1}_k$ of the $k$ cell 
+in the $L-1$ layer.  That is 
 
+\begin{eqnarray}
+    z^{L}_j &=& \sum_k w_{jk} a^{L-1}_k \\
+    z^{L}_j &=& \sum_k w_{jk}f(z^{L-1}_k)
+\end{eqnarray}    
+where $z^{L-1}_k = \sum_l w_{kl} a^{L-2}_l$
 
-
-
-
-
-\begin{thebibliography}{}
-
-\bibitem{NumericalRecipes}  Press, W. H. (2007). Numerical recipes 3rd edition: The art of scientific computing. Cambridge university press.
-
-
-
-\end{thebibliography}
+% \begin{equation}
+%     \frac{\partial z^{L}_j}{\partial w_{kl} } = \frac{\partial z^{L}_j}{\partial  a^{L-1}_k}
+% \end{equation}
 
 
 
