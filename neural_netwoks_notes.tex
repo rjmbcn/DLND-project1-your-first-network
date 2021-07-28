@@ -155,7 +155,8 @@ using gradient descent
 \end{equation}
 
 To get expressions for the rate of change of the cost function with respect weights consider the following.
-Starting with weights connecting cells in the second-to-last layer to cells in the output layer we obtain 
+Starting with weights connecting cells in the second-to-last layer, indexed with $k$, to cells in the output 
+layer (index $j$) we obtain 
 \begin{equation}
     \frac{\partial C}{\partial w^{L-1}_{jk}} =  \frac{\partial C}{\partial a^{L}_j} 
                                                \frac{\partial a^{L}_j}{\partial z^{L}_j}
@@ -164,7 +165,7 @@ Starting with weights connecting cells in the second-to-last layer to cells in t
 
 where 
 \begin{eqnarray}
-    z^{L}_j &=& \sum_k w_{jk} a^{L-1}_k. 
+    z^{L}_j &=& \sum_k w_{jk}^{L-1} a^{L-1}_k. 
 \end{eqnarray}  
 Thus 
 \begin{equation}
@@ -175,27 +176,30 @@ Thus
 
 Defining 
 \begin{equation}
-    \delta_j = \frac{\partial C}{\partial a^{L}_j} f'(z^{L}_j)
+    \delta_j^{L} = \frac{\partial C}{\partial a^{L}_j} f'(z^{L}_j)
 \end{equation}
 we get 
 \begin{equation}
-    \frac{\partial C}{\partial w^{L-1}_{jk}} =  \delta_j a^{L-1}_k ,
+    \frac{\partial C}{\partial w^{L-1}_{jk}} =  \delta_j^{L} a^{L-1}_k ,
 \end{equation}    
 
 which corresponds to the elements of the matrix 
 \begin{equation}
-    \frac{\partial C}{\partial \mathbf{W}^{L-1}} = \delta^{l} \otimes \mathbf{a}^{l-1}. 
+    \frac{\partial C}{\partial \mathbf{W}^{L-1}} = \delta^{L} \otimes \mathbf{a}^{L-1}. 
 \end{equation}
 
-
 To get an expression for the rate of change of the cost function with respect to coefficients 
-connecting cells in the third-to-last layer with cells in the second-to-last layer consider 
+connecting cells in the third-to-last layer (indexed with $l$,) to cells
+in the second-to-last layer (with index $k$) consider 
 
-\begin{equation}
-    \frac{\partial C}{\partial w^{L-2}_{kl}} = \sum_j \frac{\partial C}{\partial a^{L}_j} 
+\begin{eqnarray}
+    \frac{\partial C}{\partial w^{L-2}_{kl}} &=& \sum_j \frac{\partial C}{\partial a^{L}_j} 
                                                \frac{\partial a^{L}_j}{\partial z^{L}_j}
-                                               \frac{\partial z^{L}_j}{\partial w_{kl} }
-\end{equation}    
+                                               \frac{\partial z^{L}_j}{\partial w_{kl}^{L-2} } \\
+    \frac{\partial C}{\partial w^{L-2}_{kl}} &=& \sum_j \delta_j^{L}  \frac{\partial z^{L}_j}{\partial w_{kl}^{L-2} }                                         
+\end{eqnarray}    
+
+
 where the sum running over $j$ is due to the fact that the $ w^{L-2}_{kl} $ weight
 in the $L-2$ layer couples to all cells in the $L$ layer by the output $a^{L-1}_k$ of the $k$ cell 
 in the $L-1$ layer.   
@@ -203,15 +207,15 @@ in the $L-1$ layer.
 Note that 
 \begin{eqnarray}
     z^{L}_j &=& \sum_k w_{jk}f(z^{L-1}_k) \\ 
-    z^{L}_j &=& \sum_k w_{jk}f(\sum_l w_{kl} a^{L-2}_l)
+    z^{L}_j &=& \sum_k w_{jk}f(\sum_l w_{kl}^{L-2} a^{L-2}_l)
 \end{eqnarray}    
 thus, following the chain rule one obtains
 
 
 \begin{eqnarray}
-    \frac{\partial z^{L}_j}{\partial w_{kl} } &=& \sum_k w_{jk} \frac{\partial f(z^{L-1}_j)}{\partial  w_{kl}} \\
-    \frac{\partial z^{L}_j}{\partial w_{kl} } &=& \sum_k w_{jk}  f'(z^{L-1}_k) \frac{\partial z^{L-1}_k}{\partial  w_{kl}} \\   
-    \frac{\partial z^{L}_j}{\partial w_{kl} } &=& \sum_k w_{jk}  f'(z^{L-1}_k) a^{L-2}_l , \\
+    \frac{\partial z^{L}_j}{\partial w_{kl}^{L-2} } &=& \sum_k w_{jk}^{L-1} \frac{\partial f(z^{L-1}_j)}{\partial  w_{kl}^{L-2}} \\
+    \frac{\partial z^{L}_j}{\partial w_{kl}^{L-2} } &=& \sum_k w_{jk}^{L-1}  f'(z^{L-1}_k) \frac{\partial z^{L-1}_k}{\partial  w_{kl}^{L-2}} \\   
+    \frac{\partial z^{L}_j}{\partial w_{kl}^{L-2} } &=& \sum_k w_{jk}^{L-1}  f'(z^{L-1}_k) a^{L-2}_l , \\
 \end{eqnarray}
 
 which can be cast in matrix form as 
@@ -221,8 +225,16 @@ which can be cast in matrix form as
 \end{equation}
 where
 \begin{eqnarray}
-    \delta^{L-1} &=& \left(\left(\mathbf{W}^{L-1}\right)^{T}\delta^{L-1} \right) \odot f^{'}\left( \mathbf{h}^{l-1}\right) 
+    \delta^{L-1} &=& \left(\left(\mathbf{W}^{L-1}\right)^{T}\delta^{L} \right) \odot f^{'}\left( \mathbf{z}^{L-1}\right) 
+\end{eqnarray}.
+
+It can be proved that for any inner layer $M$
+
+\begin{eqnarray}
+    \delta^{M} &=& \left(\left(\mathbf{W}^{M}\right)^{T}\delta^{M+1} \right) \odot f^{'}\left( \mathbf{z}^{M}\right), 
 \end{eqnarray}
+
+enabling one to propagate the error in the output to all inner layers. 
 
 
 \end{document} 
